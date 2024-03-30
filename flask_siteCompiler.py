@@ -1,9 +1,15 @@
 from flask import Flask, url_for, Request;
+import os;
+import re;
 
 app = Flask(__name__)
 
 def buildGif(start, end):
-    return 'cache/KGSP20240110_060022_V06.png' #sim-link
+    files =[]
+    allfiles = os.listdir(os.path.join(app.static_folder, 'cache'))
+    for f in allfiles:
+        print(f)
+    return 'demo.gif' #sim-link
 
 @app.route("/")
 def hello_world():
