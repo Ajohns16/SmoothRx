@@ -4,28 +4,62 @@
 
     </header>
     <body>
-        <form action="http://127.0.0.1:5000/">
+        <p>This form will let you create a custom visualization using inbetween frames generated with SmoothWx.</p>
+        <p>There is a considerable load time for this tool (longer time requests or requests using more inbetween frames could take up to a few minutes to load, please be patient)</p>
+        <p>If you would prefer not to wait there are demos for <a href="http://127.0.0.1:5000/demo0">0</a>, <a href = "http://127.0.0.1:5000/demo10">10</a>, <a href="http://127.0.0.1:5000/demo30">30</a>, and <a href="http://127.0.0.1:5000/demo60">60</a> inbetween frames already prepared</p>
+        
+        <form name="inputForm" action="http://127.0.0.1:5000/map" method = "get" onsubmit="return inputValidation()"> 
             <label for="startTime">Start Time:</label><br>
-            <input type="date" id="startTime" name="startDate">
-            <input type="time" name="startTime"><br>
+            <input type="date"  name="startDate" value ="2024-01-10" readonly>
+            <input type="time" name="startTime" value = "06:00" required min = "06:00" max = "08:50"><br>
 
             <label for="endTime">End Time:</label><br>
-            <input type="date" id="endTime" name="endDate">
-            <input type="time" name="endTime"><br>
+            <input type="date" name="endDate" value ="2024-01-10" readonly>
+            <input type="time" name="endTime" value = "07:00" required min = "06:10" max = "09:00"><br>
             Number of inbetween frames: <br>
             <input type="radio" id="0frames" name="betweenFrames" value="0" checked>
             <label for="0frames">0</label>
             <input type="radio" id="10frames" name="betweenFrames" value="10">
-            <label for="0frames">10</label>
+            <label for="10frames">10</label>
             <input type="radio" id="30frames" name="betweenFrames" value="30">
-            <label for="0frames">30</label>
-            <input type="radio" id="100frames" name="betweenFrames" value="100">
-            <label for="0frames">100</label>
+            <label for="30frames">30</label>
+            <input type="radio" id="60frames" name="betweenFrames" value="60">
+            <label for="60frames">60</label>
             <br><br>
-            <input type="button" value="Demo">
-            <t></t>
             <input type="submit" value="Submit">
 
         </form>
     </body>
+    <script>
+        function inputValidation(){
+            console.log("start");
+            startTime = document.forms["inputForm"]["startTime"].value;
+            endTime = document.forms["inputForm"]["endTime"].value;
+
+            startArr = startTime.split(":")
+            startHours = parseFloat(startArr[0]);
+            startMinutes = parseFloat(startArr[1]);
+            startHours += (startMinutes/60)
+
+            endArr = endTime.split(":")
+            endHours = parseFloat(endArr[0]);
+            endMinutes = parseFloat(endArr[1]);
+            endHours += (endMinutes/60)
+
+            if (endHours < startHours) {
+                alert("You seem to have swapped your start and end times, please try again");
+                return false;
+            }
+            if ((endHours-startHours) > 1) {
+                alert("Something went wrong with your start and end times. Please note that requested animations must have enpoints within 1 hour of each other")
+                return false;
+            }
+            if (endHours < 6.05 || startHours > 8.9) {
+                alert("These bounds could result in no animation being created. Please select a different range.")
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </html>
